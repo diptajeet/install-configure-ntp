@@ -1,0 +1,7 @@
+# Playbook to install and configure NTP client
+---
+- hosts: servers
+  remote_user: root
+  
+  roles:
+   - ntp

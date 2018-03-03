@@ -1,0 +1,33 @@
+ - name: Setting up prerequistes
+   yum: name={{ item }} state=installed
+   with_items:
+    - libselinux-python
+    - yum-utils
+ 
+ - name: Checking if NTP is installed
+   yum: list=ntp
+   register: ntpstatus
+
+ - name: Installing NTP
+   yum: name=ntp state=latest
+   when: ntpstatus.results[0].yumstate != 'installed'
+   
+ - name: Removing default NTP
+   lineinfile:
+    path: /etc/ntp.conf
+    state: absent
+    regexp: '^server '
+    
+ - name: Setting up NTP
+   blockinfile:
+    path: /etc/ntp.conf
+    block: |
+     server 1.in.pool.ntp.org
+     server 0.asia.pool.ntp.org
+     server 2.asia.pool.ntp.org
+     
+ - name: Starting the NTP Service
+   service: name=ntpd state=started enabled=yes
+    
+ - name: Syncing the time with NTP Server
+   command: ntpq -p
