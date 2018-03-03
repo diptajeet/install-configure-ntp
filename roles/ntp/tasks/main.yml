@@ -30,4 +30,4 @@
    service: name=ntpd state=started enabled=yes
     
  - name: Syncing the time with NTP Server
-   command: ntpq -p
+   command: ntpdate -q 1.in.pool.ntp.org
